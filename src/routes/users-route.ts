@@ -6,7 +6,7 @@ export const usersRoute = new Elysia().post(
   async ({ body, set }) => {
     const result = await registerUser(body);
 
-    if (result.error) {
+    if ('error' in result) {
       set.status = 400;
       return { error: result.error };
     }

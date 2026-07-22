@@ -8,7 +8,13 @@ export interface RegisterUserInput {
   password: string;
 }
 
-export async function registerUser(input: RegisterUserInput) {
+export type RegisterUserResult =
+  | { data: string }
+  | { error: string };
+
+export async function registerUser(
+  input: RegisterUserInput
+): Promise<RegisterUserResult> {
   const existingUser = await db
     .select()
     .from(users)
@@ -24,11 +30,18 @@ export async function registerUser(input: RegisterUserInput) {
     cost: 10,
   });
 
-  await db.insert(users).values({
-    name: input.name,
-    email: input.email,
-    password: hashedPassword,
-  });
+  try {
+    await db.insert(users).values({
+      name: input.name,
+      email: input.email,
+      password: hashedPassword,
+    });
 
-  return { data: 'Ok' };
+    return { data: 'Ok' };
+  } catch (error: any) {
+    if (error.code === 'ER_DUP_ENTRY') {
+      return { error: 'email sudah terdaftar' };
+    }
+    throw error;
+  }
 }
