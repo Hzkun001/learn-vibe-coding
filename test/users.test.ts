@@ -1,7 +1,11 @@
 import { describe, it, expect, beforeAll } from 'bun:test';
-import { registerUser, loginUser } from '../src/services/users-service';
+import {
+  registerUser,
+  loginUser,
+  getCurrentUser,
+} from '../src/services/users-service';
 import { db } from '../src/db';
-import { users, sessions } from '../src/db/schema';
+import { sessions } from '../src/db/schema';
 import { eq } from 'drizzle-orm';
 
 describe('User Authentication & Login Tests', () => {
@@ -10,6 +14,7 @@ describe('User Authentication & Login Tests', () => {
     email: `login_test_${Date.now()}@example.com`,
     password: 'password123',
   };
+  let validToken = '';
 
   beforeAll(async () => {
     // Register user first
@@ -43,6 +48,7 @@ describe('User Authentication & Login Tests', () => {
     if ('data' in result) {
       expect(typeof result.data).toBe('string');
       expect(result.data.length).toBeGreaterThan(0);
+      validToken = result.data;
 
       // Verify token is saved in database sessions table
       const sessionInDb = await db
@@ -54,5 +60,27 @@ describe('User Authentication & Login Tests', () => {
       expect(sessionInDb.length).toBe(1);
       expect(sessionInDb[0].token).toBe(result.data);
     }
+  });
+
+  describe('Get Current User Tests', () => {
+    it('should return unauthorized error for empty token', async () => {
+      const result = await getCurrentUser('');
+      expect(result).toEqual({ error: 'unauthorized' });
+    });
+
+    it('should return unauthorized error for invalid token', async () => {
+      const result = await getCurrentUser('invalid-token-12345');
+      expect(result).toEqual({ error: 'unauthorized' });
+    });
+
+    it('should return current user profile for valid token', async () => {
+      const result = await getCurrentUser(validToken);
+      expect('data' in result).toBe(true);
+      if ('data' in result) {
+        expect(result.data.name).toBe(testUser.name);
+        expect(result.data.email).toBe(testUser.email);
+        expect('password' in result.data).toBe(false);
+      }
+    });
   });
 });
