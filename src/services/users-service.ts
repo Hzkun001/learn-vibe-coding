@@ -21,6 +21,17 @@ export type LoginUserResult =
   | { data: string }
   | { error: string };
 
+export interface UserProfileResponse {
+  id: number;
+  name: string;
+  email: string;
+  createdAt: Date | null;
+}
+
+export type GetCurrentUserResult =
+  | { data: UserProfileResponse }
+  | { error: string };
+
 export async function registerUser(
   input: RegisterUserInput
 ): Promise<RegisterUserResult> {
@@ -87,4 +98,41 @@ export async function loginUser(
   });
 
   return { data: token };
+}
+
+export async function getCurrentUser(
+  token: string
+): Promise<GetCurrentUserResult> {
+  if (!token) {
+    return { error: 'unauthorized' };
+  }
+
+  const sessionList = await db
+    .select()
+    .from(sessions)
+    .where(eq(sessions.token, token))
+    .limit(1);
+
+  if (sessionList.length === 0) {
+    return { error: 'unauthorized' };
+  }
+
+  const session = sessionList[0];
+
+  const userList = await db
+    .select({
+      id: users.id,
+      name: users.name,
+      email: users.email,
+      createdAt: users.createdAt,
+    })
+    .from(users)
+    .where(eq(users.id, session.userId))
+    .limit(1);
+
+  if (userList.length === 0) {
+    return { error: 'unauthorized' };
+  }
+
+  return { data: userList[0] };
 }
