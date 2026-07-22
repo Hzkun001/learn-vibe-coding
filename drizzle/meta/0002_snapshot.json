@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "d3e0e5bd-74e8-4a19-9a2c-b49fbeb64213",
+  "id": "32b3d414-47b5-4940-936f-746830e80ec7",
   "prevId": "1f163c69-c332-4189-b8b9-541fd26cf0a5",
   "tables": {
     "sessions": {
@@ -23,7 +23,7 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "int",
+          "type": "bigint unsigned",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false

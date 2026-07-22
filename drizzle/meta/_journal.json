@@ -19,15 +19,8 @@
     {
       "idx": 2,
       "version": "5",
-      "when": 1784696832351,
-      "tag": "0002_bumpy_typhoid_mary",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1784696876814,
-      "tag": "0003_polite_jack_flag",
+      "when": 1784700890602,
+      "tag": "0002_bored_talon",
       "breakpoints": true
     }
   ]
