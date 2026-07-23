@@ -32,6 +32,10 @@ export type GetCurrentUserResult =
   | { data: UserProfileResponse }
   | { error: string };
 
+export type LogoutUserResult =
+  | { data: string }
+  | { error: string };
+
 export async function registerUser(
   input: RegisterUserInput
 ): Promise<RegisterUserResult> {
@@ -135,4 +139,26 @@ export async function getCurrentUser(
   }
 
   return { data: userList[0] };
+}
+
+export async function logoutUser(
+  token: string
+): Promise<LogoutUserResult> {
+  if (!token) {
+    return { error: 'unauthorized' };
+  }
+
+  const sessionList = await db
+    .select()
+    .from(sessions)
+    .where(eq(sessions.token, token))
+    .limit(1);
+
+  if (sessionList.length === 0) {
+    return { error: 'unauthorized' };
+  }
+
+  await db.delete(sessions).where(eq(sessions.token, token));
+
+  return { data: 'OK' };
 }
