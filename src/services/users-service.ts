@@ -36,6 +36,15 @@ export type LogoutUserResult =
   | { data: string }
   | { error: string };
 
+/**
+ * Mendaftarkan pengguna baru (Registrasi).
+ * Fungsi ini akan mengecek apakah email sudah terdaftar. 
+ * Jika belum, akan melakukan hashing pada password menggunakan bcrypt, 
+ * kemudian menyimpan data pengguna baru ke database.
+ * 
+ * @param input Data pengguna yang berisi name, email, dan password.
+ * @returns Response berupa string 'Ok' jika berhasil, atau pesan error jika email sudah terdaftar.
+ */
 export async function registerUser(
   input: RegisterUserInput
 ): Promise<RegisterUserResult> {
@@ -70,6 +79,15 @@ export async function registerUser(
   }
 }
 
+/**
+ * Melakukan proses otentikasi/login pengguna.
+ * Fungsi ini akan mencari pengguna berdasarkan email, 
+ * lalu memverifikasi kecocokan password menggunakan bcrypt.
+ * Jika valid, akan membuat token sesi (UUID) baru, menyimpannya ke database, dan mengembalikan token tersebut.
+ * 
+ * @param input Data login yang berisi email dan password.
+ * @returns Response berupa token string UUID jika berhasil, atau pesan error jika kredensial salah.
+ */
 export async function loginUser(
   input: LoginUserInput
 ): Promise<LoginUserResult> {
@@ -104,6 +122,14 @@ export async function loginUser(
   return { data: token };
 }
 
+/**
+ * Mengambil profil pengguna yang saat ini sedang login.
+ * Fungsi ini akan mencari session berdasarkan token yang diberikan, 
+ * lalu mengambil data profil (tanpa password) dari pengguna yang memiliki sesi tersebut.
+ * 
+ * @param token Token sesi berformat UUID.
+ * @returns Response berupa data profil pengguna (UserProfileResponse) atau error 'unauthorized' jika token tidak valid/ditemukan.
+ */
 export async function getCurrentUser(
   token: string
 ): Promise<GetCurrentUserResult> {
@@ -141,6 +167,13 @@ export async function getCurrentUser(
   return { data: userList[0] };
 }
 
+/**
+ * Mengakhiri sesi pengguna aktif (Logout).
+ * Fungsi ini akan menghapus/menghancurkan rekaman sesi berdasarkan token dari database.
+ * 
+ * @param token Token sesi yang akan dihapus.
+ * @returns Response 'OK' jika berhasil dihapus, atau 'unauthorized' jika token tidak ada di database.
+ */
 export async function logoutUser(
   token: string
 ): Promise<LogoutUserResult> {
