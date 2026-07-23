@@ -158,4 +158,36 @@ describe('User Authentication & Login Tests', () => {
       expect(body).toEqual({ data: 'OK' });
     });
   });
+
+  describe('User Registration Validation Tests', () => {
+    it('ROUTE: should reject registration if name exceeds 255 characters', async () => {
+      const longName = 'a'.repeat(300);
+      const req = new Request('http://localhost/api/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: longName,
+          email: 'valid_email@example.com',
+          password: 'password123',
+        }),
+      });
+      const response = await usersRoute.handle(req);
+      expect(response.status).toBe(422);
+    });
+
+    it('ROUTE: should reject registration if email exceeds 255 characters', async () => {
+      const longEmail = 'a'.repeat(250) + '@example.com';
+      const req = new Request('http://localhost/api/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: 'Valid Name',
+          email: longEmail,
+          password: 'password123',
+        }),
+      });
+      const response = await usersRoute.handle(req);
+      expect(response.status).toBe(422);
+    });
+  });
 });
