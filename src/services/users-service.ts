@@ -148,17 +148,11 @@ export async function logoutUser(
     return { error: 'unauthorized' };
   }
 
-  const sessionList = await db
-    .select()
-    .from(sessions)
-    .where(eq(sessions.token, token))
-    .limit(1);
+  const [result] = await db.delete(sessions).where(eq(sessions.token, token));
 
-  if (sessionList.length === 0) {
+  if (result.affectedRows === 0) {
     return { error: 'unauthorized' };
   }
-
-  await db.delete(sessions).where(eq(sessions.token, token));
 
   return { data: 'OK' };
 }
