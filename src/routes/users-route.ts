@@ -25,29 +25,35 @@ export const usersRoute = new Elysia()
         name: t.String({
           minLength: 1,
           maxLength: 255,
-          examples: ['Eko Kurniawan'],
+          example: 'Eko Kurniawan',
         }),
         email: t.String({
           format: 'email',
           maxLength: 255,
-          examples: ['eko@example.com'],
+          example: 'eko@example.com',
         }),
         password: t.String({
           minLength: 1,
           maxLength: 255,
-          examples: ['rahasia123'],
+          example: 'rahasia123',
         }),
+      }, {
+        example: {
+          name: 'Eko Kurniawan',
+          email: 'eko@example.com',
+          password: 'rahasia123',
+        },
       }),
       response: {
         201: t.Object({
-          data: t.String({ examples: ['Ok'] }),
-        }),
+          data: t.String({ example: 'Ok' }),
+        }, { example: { data: 'Ok' } }),
         400: t.Object({
-          error: t.String({ examples: ['email sudah terdaftar'] }),
-        }),
+          error: t.String({ example: 'email sudah terdaftar' }),
+        }, { example: { error: 'email sudah terdaftar' } }),
         422: t.Object({
-          message: t.String({ examples: ['Validation error'] }),
-        }),
+          message: t.String({ example: 'Validation error' }),
+        }, { example: { message: 'Validation error' } }),
       },
       detail: {
         summary: 'Register User Baru',
@@ -73,26 +79,31 @@ export const usersRoute = new Elysia()
         email: t.String({
           format: 'email',
           maxLength: 255,
-          examples: ['eko@example.com'],
+          example: 'eko@example.com',
         }),
         password: t.String({
           minLength: 1,
           maxLength: 255,
-          examples: ['rahasia123'],
+          example: 'rahasia123',
         }),
+      }, {
+        example: {
+          email: 'eko@example.com',
+          password: 'rahasia123',
+        },
       }),
       response: {
         200: t.Object({
           data: t.String({
-            examples: ['9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'],
+            example: '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d',
           }),
-        }),
+        }, { example: { data: '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d' } }),
         400: t.Object({
-          error: t.String({ examples: ['email atau password salah'] }),
-        }),
+          error: t.String({ example: 'email atau password salah' }),
+        }, { example: { error: 'email atau password salah' } }),
         422: t.Object({
-          message: t.String({ examples: ['Validation error'] }),
-        }),
+          message: t.String({ example: 'Validation error' }),
+        }, { example: { message: 'Validation error' } }),
       },
       detail: {
         summary: 'User Login',
@@ -125,19 +136,35 @@ export const usersRoute = new Elysia()
       response: {
         200: t.Object({
           data: t.Object({
-            id: t.Number({ examples: [1] }),
-            name: t.String({ examples: ['Eko Kurniawan'] }),
-            email: t.String({ examples: ['eko@example.com'] }),
+            id: t.Number({ example: 1 }),
+            name: t.String({ example: 'Eko Kurniawan' }),
+            email: t.String({ example: 'eko@example.com' }),
             createdAt: t.Nullable(
               t.Union([t.Date(), t.String()], {
-                examples: ['2026-07-23T10:00:00.000Z'],
+                example: '2026-07-23T10:00:00.000Z',
               })
             ),
+          }, {
+            example: {
+              id: 1,
+              name: 'Eko Kurniawan',
+              email: 'eko@example.com',
+              createdAt: '2026-07-23T10:00:00.000Z',
+            },
           }),
+        }, {
+          example: {
+            data: {
+              id: 1,
+              name: 'Eko Kurniawan',
+              email: 'eko@example.com',
+              createdAt: '2026-07-23T10:00:00.000Z',
+            },
+          },
         }),
         401: t.Object({
-          error: t.String({ examples: ['unauthorized'] }),
-        }),
+          error: t.String({ example: 'unauthorized' }),
+        }, { example: { error: 'unauthorized' } }),
       },
       detail: {
         summary: 'Get Profile User Logged In',
@@ -170,11 +197,11 @@ export const usersRoute = new Elysia()
     {
       response: {
         200: t.Object({
-          data: t.String({ examples: ['OK'] }),
-        }),
+          data: t.String({ example: 'OK' }),
+        }, { example: { data: 'OK' } }),
         401: t.Object({
-          error: t.String({ examples: ['unauthorized'] }),
-        }),
+          error: t.String({ example: 'unauthorized' }),
+        }, { example: { error: 'unauthorized' } }),
       },
       detail: {
         summary: 'User Logout',
